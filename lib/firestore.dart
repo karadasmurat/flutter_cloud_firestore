@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_cloud_firestore/model/car_factory.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 
@@ -13,8 +14,15 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  var myCar = Car(2019, make: "Volkswagen");
-  await addCar(myCar);
+  // var myCar = Car(2019, make: "Volkswagen");
+  // await addCar(myCar);
+
+  CarFactory carFactory = CarFromFileFactory();
+  var cars = await carFactory.createCars();
+  for (var car in cars) {
+    await addCar(car);
+  }
+
   getCars();
 }
 
