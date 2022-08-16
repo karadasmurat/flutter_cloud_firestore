@@ -1,4 +1,11 @@
-Map<String, dynamic> carMap = {"year": 2015, "make": "VOLKSWAGEN", "model": "PASSAT"};
+Map<String, String> logos = {
+  "ALFA ROMEO": "https://www.tech-worm.com/wp-content/uploads/2016/07/alfa-romeo.jpg",
+  "AUDI": "https://logoeps.com/wp-content/uploads/2013/07/audi-eps-vector-logo.png",
+  "BENTLEY":
+      "https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/092012/bentley.jpg?itok=_0bO-d3M",
+  "BMW":
+      "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/BMW_logo_%28gray%29.svg/2048px-BMW_logo_%28gray%29.svg.png"
+};
 
 class Car {
   //variables
