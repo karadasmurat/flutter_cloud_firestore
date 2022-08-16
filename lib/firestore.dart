@@ -1,8 +1,5 @@
-import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter_cloud_firestore/model/car_factory.dart';
 import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 
@@ -133,6 +130,12 @@ Future<List<Car>?> getCarsByMake(String aMake) async {
   var query = db.collection("cars").where("make", isEqualTo: aMake);
   var querySnapshot = await query.get();
   print("Successfully completed with results: ${querySnapshot.docs.length}");
+  Iterable<Car> cars = querySnapshot.docs.map((e) => Car.fromJson(e.data()));
+  return cars.toList();
+}
+
+Future<List<Car>?> getAllCars() async {
+  var querySnapshot = await db.collection("cars").get();
   Iterable<Car> cars = querySnapshot.docs.map((e) => Car.fromJson(e.data()));
   return cars.toList();
 }

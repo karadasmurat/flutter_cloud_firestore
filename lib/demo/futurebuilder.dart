@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_cloud_firestore/firestore.dart';
 import 'package:flutter_cloud_firestore/model/car.dart';
 
 class FutureBuilderDemo extends StatefulWidget {
@@ -35,7 +34,8 @@ class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
     Car(2022, make: "LINCOLN"),
   ];
 
-  late Future<List<Car>> _cars;
+  //FutureBuilder's future variable:
+  late Future<List<Car>?> _cars;
 
   @override
   void initState() {
@@ -44,9 +44,18 @@ class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
     _cars = loadCars();
   }
 
-  Future<List<Car>> loadCars() async {
-    await Future.delayed(const Duration(seconds: 3));
-    return sampleCars;
+  Future<List<Car>?> loadCars() async {
+    // simulate waiting time, then return a static list:
+    // await Future.delayed(const Duration(seconds: 3));
+    // return sampleCars;
+
+    // get documents from firestore
+    var cars = await getAllCars();
+    return cars;
+
+    // we can return null, as return type is Future<List<Car>?>
+    // snapshot.hasData is false in this case
+    // return null;
   }
 
   Future<List<Car>> addCar() async {
@@ -57,52 +66,59 @@ class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextButton(
-          onPressed: () {
-            setState(() {
-              _cars = addCar();
-            });
-          },
-          child: const Text("Load"),
-        ),
-        FutureBuilder<List<Car>>(
-            future: _cars,
-            builder: (context, snapshot) {
-              switch (snapshot.connectionState) {
-                case ConnectionState.done:
-                  if (snapshot.hasData) {
-                    var cars = snapshot.data!;
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("FutureBuilder Demo"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextButton(
+            onPressed: () {
+              setState(() {
+                _cars = addCar();
+              });
+            },
+            child: const Text("Load"),
+          ),
+          FutureBuilder<List<Car>?>(
+              future: _cars,
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.done:
+                    if (snapshot.hasData) {
+                      var cars = snapshot.data!;
 
-                    return Flexible(
-                      child: ListView.builder(
-                          itemCount: cars.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.amber[100],
-                                backgroundImage: NetworkImage(logos[cars[index].make] ??
-                                    "https://source.unsplash.com/random/200x200"),
-                              ),
-                              title: Text(cars[index].make),
-                              trailing: const Icon(Icons.more_vert),
-                            );
-                          }),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Text("Error loading data");
-                  } else {
-                    return const Text("No data..");
-                  }
+                      return Flexible(
+                        child: ListView.builder(
+                            itemCount: cars.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  backgroundColor: Colors.amber[100],
+                                  backgroundImage: NetworkImage(logos[cars[index].make] ??
+                                      "https://source.unsplash.com/random/200x200"),
+                                ),
+                                title: Text(cars[index].make),
+                                subtitle: Text(cars[index].year.toString()),
+                                trailing: const Icon(Icons.more_vert),
+                              );
+                            }),
+                      );
+                    } else if (snapshot.hasError) {
+                      final err = snapshot.error;
+                      return Text("Error loading data: $err");
+                    } else {
+                      return const Text("No data..");
+                    }
 
-                default:
-                  return const CircularProgressIndicator();
-              }
-            }),
-      ],
+                  default:
+                    return const CircularProgressIndicator();
+                }
+              }),
+        ],
+      ),
     );
   }
 }
