@@ -6,12 +6,12 @@ import 'package:http/http.dart' as http;
 import 'car.dart';
 
 abstract class CarFactory {
-  Future createCars();
+  Future<List<Car>> createCars();
 }
 
 class CarFromFileFactory implements CarFactory {
   @override
-  Future createCars() async {
+  Future<List<Car>> createCars() async {
     // read an asset, .json file
     var decodedJson = await loadCarsFromFile("assets/json/cars.json");
 
