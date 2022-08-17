@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_cloud_firestore/firestore.dart';
 import 'package:flutter_cloud_firestore/model/car.dart';
+import 'package:flutter_cloud_firestore/views/car_view.dart';
+
+import '../model/car_factory.dart';
 
 class FutureBuilderDemo extends StatefulWidget {
   const FutureBuilderDemo({Key? key}) : super(key: key);
@@ -10,30 +13,6 @@ class FutureBuilderDemo extends StatefulWidget {
 }
 
 class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
-  var sampleCars = [
-    Car(2007, make: "ALFA ROMEO"),
-    Car(2019, make: "AUDI"),
-    Car(2022, make: "BENTLEY"),
-    Car(2007, make: "BMW"),
-    Car(2019, make: "BUGATTI"),
-    Car(2022, make: "CHEVROLET"),
-    Car(2007, make: "CITROEN"),
-    Car(2019, make: "DACIA"),
-    Car(2022, make: "HONDA"),
-    Car(2007, make: "HYUNDAI"),
-    Car(2019, make: "FERRARI"),
-    Car(2022, make: "FIAT"),
-    Car(2007, make: "FORD"),
-    Car(2019, make: "ISUZU"),
-    Car(2022, make: "JAGUAR"),
-    Car(2007, make: "JEEP"),
-    Car(2019, make: "KIA"),
-    Car(2022, make: "LADA"),
-    Car(2007, make: "LAND ROVER"),
-    Car(2019, make: "LEXUS"),
-    Car(2022, make: "LINCOLN"),
-  ];
-
   //FutureBuilder's future variable:
   late Future<List<Car>?> _cars;
 
@@ -74,14 +53,6 @@ class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextButton(
-            onPressed: () {
-              setState(() {
-                _cars = addCar();
-              });
-            },
-            child: const Text("Load"),
-          ),
           FutureBuilder<List<Car>?>(
               future: _cars,
               builder: (context, snapshot) {
@@ -94,15 +65,23 @@ class _FutureBuilderDemoState extends State<FutureBuilderDemo> {
                         child: ListView.builder(
                             itemCount: cars.length,
                             itemBuilder: (context, index) {
+                              var car = cars[index];
                               return ListTile(
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.amber[100],
-                                  backgroundImage: NetworkImage(logos[cars[index].make] ??
-                                      "https://source.unsplash.com/random/200x200"),
+                                  backgroundImage: NetworkImage(logos[car.make] ??
+                                      "https://source.unsplash.com/random/200x200/?car&sig=$index"),
                                 ),
-                                title: Text(cars[index].make),
-                                subtitle: Text(cars[index].year.toString()),
-                                trailing: const Icon(Icons.more_vert),
+                                title: Text(car.make),
+                                subtitle: Text(car.year.toString()),
+                                trailing: const Icon(Icons.arrow_right),
+                                onTap: () {
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => CarPage(car),
+                                    ),
+                                  );
+                                },
                               );
                             }),
                       );

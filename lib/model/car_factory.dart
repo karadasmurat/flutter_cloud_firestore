@@ -5,6 +5,30 @@ import 'package:http/http.dart' as http;
 
 import 'car.dart';
 
+var sampleCars = [
+  Car(2007, make: "ALFA ROMEO"),
+  Car(2019, make: "AUDI"),
+  Car(2022, make: "BENTLEY"),
+  Car(2007, make: "BMW"),
+  Car(2019, make: "BUGATTI"),
+  Car(2022, make: "CHEVROLET"),
+  Car(2007, make: "CITROEN"),
+  Car(2019, make: "DACIA"),
+  Car(2022, make: "HONDA"),
+  Car(2007, make: "HYUNDAI"),
+  Car(2019, make: "FERRARI"),
+  Car(2022, make: "FIAT"),
+  Car(2007, make: "FORD"),
+  Car(2019, make: "ISUZU"),
+  Car(2022, make: "JAGUAR"),
+  Car(2007, make: "JEEP"),
+  Car(2019, make: "KIA"),
+  Car(2022, make: "LADA"),
+  Car(2007, make: "LAND ROVER"),
+  Car(2019, make: "LEXUS"),
+  Car(2022, make: "LINCOLN"),
+];
+
 abstract class CarFactory {
   Future<List<Car>> createCars();
 }
