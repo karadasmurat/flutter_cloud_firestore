@@ -15,6 +15,33 @@ class _ListViewDemoState extends State<ListViewDemo> {
   ];
   @override
   Widget build(BuildContext context) {
+    //var widget = createSimpleListView();
+    var widget = createSimpleListViewBuilder();
+
+    return widget;
+  }
+
+  Widget createSimpleListView() {
+    return ListView(
+      children: const [
+        Text("Data 1"),
+        Text("Data 2"),
+        Text("Data 3"),
+        Text("Data 4"),
+        Text("Data 5"),
+      ],
+    );
+  }
+
+  Widget createSimpleListViewBuilder() {
+    return ListView.builder(
+        itemCount: 20,
+        itemBuilder: (context, index) {
+          return Text("Item $index");
+        });
+  }
+
+  Widget createListViewBuilderFromAList() {
     return ListView.builder(
         itemCount: cars.length,
         itemBuilder: (context, index) {

@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cloud_firestore/demo/futurebuilder.dart';
+import 'package:flutter_cloud_firestore/demo/listview.dart';
+import 'package:flutter_cloud_firestore/demo/streambuilder.dart';
+import 'package:flutter_cloud_firestore/firestore_stream.dart';
 
 import 'firebase_options.dart';
 
@@ -22,7 +25,10 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const FutureBuilderDemo(),
+      home: Scaffold(
+        appBar: AppBar(title: Text("Demo App")),
+        body: const ListViewDemo(),
+      ),
     );
   }
 }
