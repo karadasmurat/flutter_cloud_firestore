@@ -1,10 +1,29 @@
+/*
+
+https://firebase.google.com/docs
+
+Add Firebase to your Flutter App: https://firebase.google.com/docs/flutter/setup
+
+  * Install Flutter for your specific operating system
+  * Install the Firebase CLI.
+  * Log into Firebase using your Google account by running the following command    : $ firebase login
+  * Install the FlutterFire CLI by running the following command from any directory : $ dart pub global activate flutterfire_cli
+  * Use the FlutterFire CLI to configure your Flutter apps to connect to Firebase   : $ flutterfire configure
+
+  * Add dependencies (From your Flutter project directory)
+    -  install the core plugin: $ flutter pub add firebase_core
+    -  $ flutterfire configure
+
+
+  EXAMPLES on github
+  https://github.com/firebase/flutterfire/blob/master/packages/firebase_auth/firebase_auth/example/
+
+
+ */
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cloud_firestore/demo/futurebuilder.dart';
 import 'package:flutter_cloud_firestore/demo/listview.dart';
-import 'package:flutter_cloud_firestore/demo/streambuilder.dart';
-import 'package:flutter_cloud_firestore/firestore_stream.dart';
-
 import 'firebase_options.dart';
 
 void main() async {
@@ -26,7 +45,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: Scaffold(
-        appBar: AppBar(title: Text("Demo App")),
+        appBar: AppBar(title: const Text("Demo App")),
         body: const ListViewDemo(),
       ),
     );
