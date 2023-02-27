@@ -14,8 +14,12 @@ Add Firebase to your Flutter App: https://firebase.google.com/docs/flutter/setup
     -  install the core plugin: $ flutter pub add firebase_core
     -  $ flutterfire configure
 
+  * Add plugins
+    - $ flutter pub add firebase_auth
+
 
   EXAMPLES on github
+  https://github.com/firebase/quickstart-flutter
   https://github.com/firebase/flutterfire/blob/master/packages/firebase_auth/firebase_auth/example/
 
 
@@ -23,8 +27,13 @@ Add Firebase to your Flutter App: https://firebase.google.com/docs/flutter/setup
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cloud_firestore/demo/listview.dart';
 import 'firebase_options.dart';
+import 'views/homepage.dart';
+import 'views/login_view.dart';
+import 'views/notes_view.dart';
+import 'views/register_view.dart';
+import '../constants/routes.dart';
+import 'views/verify_view.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -46,8 +55,16 @@ class MyApp extends StatelessWidget {
       ),
       home: Scaffold(
         appBar: AppBar(title: const Text("Demo App")),
-        body: const ListViewDemo(),
+        body: const RegisterView(), // ListViewDemo(),
       ),
+      initialRoute: "/home",
+      routes: {
+        ROUTE_HOME: (context) => HomePage(),
+        ROUTE_LOGIN: (context) => LoginView(),
+        ROUTE_REGISTER: (context) => RegisterView(),
+        ROUTE_VERIFY: (context) => VerifyEmailView(),
+        ROUTE_NOTES: (context) => NotesView(),
+      },
     );
   }
 }
