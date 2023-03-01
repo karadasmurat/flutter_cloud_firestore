@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(title: const Text("Demo App")),
         body: const RegisterView(), // ListViewDemo(),
       ),
-      initialRoute: "/home",
+      initialRoute: ROUTE_HOME,
       routes: {
         ROUTE_HOME: (context) => HomePage(),
         ROUTE_LOGIN: (context) => LoginView(),

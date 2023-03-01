@@ -11,6 +11,8 @@
 // The superclass, or parent class (sometimes called base class),
 // contains all the attributes and behaviors that are common to classes that inherit from it.
 
+import 'package:flutter/foundation.dart';
+
 class Person {
 // abstract class Person {
 
@@ -35,8 +37,13 @@ class Person {
   // void introduce();
 
   @override
-  String toString() =>
-      '{"fn": "$firstName", "m": "$middleName", "ln": "$lastName", "by": $birthYear}';
+  String toString() {
+    return '${objectRuntimeType(this, 'Person')}('
+        'fname: $firstName, '
+        'mname: $middleName, '
+        'lname: $lastName, '
+        'byear: $birthYear)';
+  }
 }
 
 class Staff extends Person {

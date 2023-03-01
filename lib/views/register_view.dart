@@ -73,7 +73,11 @@ class _RegisterViewState extends State<RegisterView> {
                     email: _emailController.text.trim(),
                     password: _passwordController.text.trim(),
                   );
+
+                  dev.log("Registered new user: ${userCredential.user?.email}");
+                  Navigator.pushNamedAndRemoveUntil(context, ROUTE_VERIFY, (_) => false);
                 } on FirebaseAuthException catch (e) {
+                  /*
                   if (e.code == 'weak-password') {
                     //print('The password provided is too weak.');
                     await errDialog(context, e.message ?? e.code);
@@ -81,6 +85,8 @@ class _RegisterViewState extends State<RegisterView> {
                     //print('The account already exists for that email.');
                     await errDialog(context, e.message ?? e.code);
                   }
+                  */
+                  await errDialog(context, e.message ?? e.code);
                 } catch (e) {
                   dev.log(e.toString());
                 }
