@@ -4,7 +4,7 @@ import 'dart:developer' as dev;
 import '../constants/routes.dart';
 
 // This is the type used by the popup menu below.
-enum Menu { itemOne, itemTwo, itemThree, logout }
+enum MenuAction { actionOne, actionTwo, settings, logout }
 
 class NotesView extends StatefulWidget {
   const NotesView({Key? key}) : super(key: key);
@@ -30,9 +30,9 @@ class _NotesViewState extends State<NotesView> {
             },
           ),
           PopupMenuButton(
-            onSelected: (menu) {
-              dev.log("Selection: $menu");
-              if (menu == Menu.logout) {
+            onSelected: (menuAction) {
+              dev.log("PopupMenuButton selection: $menuAction");
+              if (menuAction == MenuAction.logout) {
                 showDialog(
                   context: context,
                   builder: (_) => AlertDialog(
@@ -57,30 +57,32 @@ class _NotesViewState extends State<NotesView> {
                 );
               }
             },
-            itemBuilder: (BuildContext context) => <PopupMenuEntry<Menu>>[
-              const PopupMenuItem<Menu>(
-                value: Menu.itemOne,
-                child: ListTile(
-                  leading: Icon(Icons.settings),
-                  title: Text('Item 1'),
-                ),
-              ),
-              const PopupMenuItem<Menu>(
-                value: Menu.itemTwo,
-                child: ListTile(
-                  leading: Icon(Icons.timeline),
-                  title: Text('Item 2'),
-                ),
-              ),
-              const PopupMenuItem<Menu>(
-                value: Menu.itemThree,
+            itemBuilder: (BuildContext context) => <PopupMenuEntry<MenuAction>>[
+              const PopupMenuItem<MenuAction>(
+                // the value is a MenuAction:
+                value: MenuAction.actionOne,
+                // view is represented as a ListTile:
                 child: ListTile(
                   leading: Icon(Icons.abc),
-                  title: Text('Item 3'),
+                  title: Text('Menu 1'),
                 ),
               ),
-              const PopupMenuItem<Menu>(
-                value: Menu.logout,
+              const PopupMenuItem<MenuAction>(
+                value: MenuAction.actionTwo,
+                child: ListTile(
+                  leading: Icon(Icons.timeline),
+                  title: Text('Menu 2'),
+                ),
+              ),
+              const PopupMenuItem<MenuAction>(
+                value: MenuAction.settings,
+                child: ListTile(
+                  leading: Icon(Icons.settings),
+                  title: Text('Settings'),
+                ),
+              ),
+              const PopupMenuItem<MenuAction>(
+                value: MenuAction.logout,
                 child: ListTile(
                   leading: Icon(Icons.logout),
                   title: Text('Log out'),

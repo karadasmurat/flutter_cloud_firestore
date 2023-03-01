@@ -80,10 +80,8 @@ class _RegisterViewState extends State<RegisterView> {
                   /*
                   if (e.code == 'weak-password') {
                     //print('The password provided is too weak.');
-                    await errDialog(context, e.message ?? e.code);
                   } else if (e.code == 'email-already-in-use') {
                     //print('The account already exists for that email.');
-                    await errDialog(context, e.message ?? e.code);
                   }
                   */
                   await errDialog(context, e.message ?? e.code);

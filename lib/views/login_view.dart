@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as dev;
 
 import '../constants/routes.dart';
+import '../util/authentication.dart';
 import '../util/err_dialog.dart';
+
+const String kIconGoogleSignIn = 'assets/icons/google.png';
 
 class LoginView extends StatefulWidget {
   LoginView({Key? key}) : super(key: key);
@@ -64,6 +67,7 @@ class _LoginViewState extends State<LoginView> {
             ElevatedButton(
               onPressed: () async {
                 try {
+                  // signInWithEmailAndPassword
                   final userCredential = await FirebaseAuth.instance
                       .signInWithEmailAndPassword(
                           email: _emailController.text.trim(),
@@ -84,18 +88,59 @@ class _LoginViewState extends State<LoginView> {
                   }
                 } on FirebaseAuthException catch (e) {
                   dev.log('Failed with FirebaseAuthException: ${e.message}');
+
+                  // give different reactions to different errors if required
+                  if (e.code == 'user-not-found') {
+                    dev.log('USER NOT FOUND custom message.');
+                  } else if (e.code == 'wrong-password') {
+                    dev.log('WRONG PASSWORD custom message.');
+                  } else if (e.code == 'invalid-email') {
+                    dev.log('INVALID EMAIL custom message.');
+                  }
+                  //
+
+                  // Option 1 - Show a [SnackBar]
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
                       content: Text(e.message ?? e.code),
                     ),
                   );
 
-                  await errDialog(context, e.message ?? "e.code");
+                  // Option 2 - Show a dialog
+                  // await errDialog(context, e.message ?? "e.code");
                 } catch (e) {
                   dev.log(e.toString());
                 }
               },
               child: const Text('Login'),
+            ),
+            TextButton(
+              onPressed: () async {
+                final userCredential = await Authentication.signInWithGoogle(context);
+
+                if (userCredential != null) {
+                  Navigator.pushNamedAndRemoveUntil(context, ROUTE_VERIFY, (_) => false);
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(35, 8, 35, 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const <Widget>[
+                    Image(
+                      image: AssetImage(kIconGoogleSignIn),
+                      height: 20,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 10),
+                      child: Text(
+                        'Sign in with Google',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             TextButton(
               onPressed: () {
