@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cloud_firestore/services/auth/authservice.dart';
 import '../constants/routes.dart';
 import '../util/err_dialog.dart';
 
@@ -68,23 +69,29 @@ class _RegisterViewState extends State<RegisterView> {
             ElevatedButton(
               onPressed: () async {
                 try {
-                  final userCredential =
-                      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  // OLD
+                  // final userCredential =
+                  //     await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  //   email: _emailController.text.trim(),
+                  //   password: _passwordController.text.trim(),
+                  // );
+
+                  //NEW
+                  final authService = AuthService.firebase();
+                  final auser = await authService.createUser(
                     email: _emailController.text.trim(),
                     password: _passwordController.text.trim(),
                   );
 
-                  dev.log("Registered new user: ${userCredential.user?.email}");
-                  Navigator.pushNamedAndRemoveUntil(context, ROUTE_VERIFY, (_) => false);
-                } on FirebaseAuthException catch (e) {
-                  /*
-                  if (e.code == 'weak-password') {
-                    //print('The password provided is too weak.');
-                  } else if (e.code == 'email-already-in-use') {
-                    //print('The account already exists for that email.');
-                  }
-                  */
-                  await errDialog(context, e.message ?? e.code);
+                  final userCredential = dev.log("Registered new user: ${auser}");
+                  Navigator.pushNamed(context, ROUTE_VERIFY);
+                }
+                // OLD - depend on Firebase implementation
+                // on FirebaseAuthException catch (e) {
+                //   await errDialog(context, e.message ?? e.code);
+                // }
+                on Exception catch (e) {
+                  await errDialog(context, e.toString());
                 } catch (e) {
                   dev.log(e.toString());
                 }

@@ -1,3 +1,9 @@
+/*
+Documentation for Firebase Authentication on Flutter: 
+https://firebase.google.com/docs/auth/flutter/start
+
+ */
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -36,6 +42,33 @@ class Authentication {
       }
     } catch (e) {
       print('Error occurred using Google Sign In. Try again.');
+    }
+
+    final user = FirebaseAuth.instance.currentUser;
+
+    // Get a user's profile
+    if (user != null) {
+      // profile photo URL
+      final photoUrl = user.photoURL;
+      print("Profile Information:");
+      print("Photo: $photoUrl");
+    }
+
+    // Get a user's provider-specific profile information
+    if (user != null) {
+      for (final userInfo in user.providerData) {
+        // ID of the provider (google.com, apple.cpm, etc.)
+        final provider = userInfo.providerId;
+
+        // UID specific to the provider
+        final uid = userInfo.uid;
+
+        // profile photo URL
+        final profilePhoto = userInfo.photoURL;
+
+        print("Provider specific profile information:");
+        print(userInfo);
+      }
     }
 
     return userCredential;

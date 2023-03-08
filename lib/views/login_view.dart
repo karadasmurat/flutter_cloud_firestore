@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'dart:developer' as dev;
 
 import '../constants/routes.dart';
+import '../services/auth/authexceptions.dart';
+import '../services/auth/authservice.dart';
 import '../util/authentication.dart';
 import '../util/err_dialog.dart';
 
@@ -64,63 +66,84 @@ class _LoginViewState extends State<LoginView> {
                   labelText: 'Password',
                   hintText: "Enter your password here."),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                try {
-                  // signInWithEmailAndPassword
-                  final userCredential = await FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: _emailController.text.trim(),
-                          password: _passwordController.text.trim());
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                TextButton(
+                  onPressed: () async {
+                    // OLD
+                    // await FirebaseAuth.instance.sendPasswordResetEmail(
+                    //   email: _emailController.text.trim(),
+                    // );
 
-                  User? user = userCredential.user;
+                    final authService = AuthService.firebase();
+                    await authService.sendPasswordResetEmail(
+                        email: _emailController.text.trim());
 
-                  dev.log("User Info: $user");
+                    // Navigate to the second screen using a named route.
+                    Navigator.pushNamedAndRemoveUntil(context, ROUTE_LOGIN, (_) => false);
+                  },
+                  child: const Text("Forgot Password?"),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      // OLD
+                      // final userCredential =
+                      //     await FirebaseAuth.instance.signInWithEmailAndPassword(
+                      //   email: _emailController.text.trim(),
+                      //   password: _passwordController.text.trim(),
+                      // );
 
-                  if (user?.emailVerified ?? false) {
-                    dev.log("E-mail Verified.");
-                    // Push the route with the given name onto the navigator, and then remove all the previous routes
-                    Navigator.pushNamedAndRemoveUntil(context, ROUTE_NOTES, (_) => false);
-                  } else {
-                    dev.log("Email not verified.");
-                    Navigator.pushNamedAndRemoveUntil(
-                        context, ROUTE_VERIFY, (_) => false);
-                  }
-                } on FirebaseAuthException catch (e) {
-                  dev.log('Failed with FirebaseAuthException: ${e.message}');
+                      // User? user = userCredential.user;
 
-                  // give different reactions to different errors if required
-                  if (e.code == 'user-not-found') {
-                    dev.log('USER NOT FOUND custom message.');
-                  } else if (e.code == 'wrong-password') {
-                    dev.log('WRONG PASSWORD custom message.');
-                  } else if (e.code == 'invalid-email') {
-                    dev.log('INVALID EMAIL custom message.');
-                  }
-                  //
+                      final authService = AuthService.firebase();
+                      final auser = await authService.signIn(
+                        email: _emailController.text.trim(),
+                        password: _passwordController.text.trim(),
+                      );
 
-                  // Option 1 - Show a [SnackBar]
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(e.message ?? e.code),
-                    ),
-                  );
+                      if (authService.currentUser != null) {
+                        if (authService.currentUser?.isVerified ?? false) {
+                          dev.log("E-mail Verified.");
+                          // Push the route with the given name onto the navigator, and then remove all the previous routes
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, ROUTE_NOTES, (_) => false);
+                        } else {
+                          dev.log("Email not verified.");
+                          Navigator.pushNamedAndRemoveUntil(
+                              context, ROUTE_VERIFY, (_) => false);
+                        }
+                      }
+                    } on AuthException catch (e) {
+                      dev.log("We have a login problem: $e");
 
-                  // Option 2 - Show a dialog
-                  // await errDialog(context, e.message ?? "e.code");
-                } catch (e) {
-                  dev.log(e.toString());
-                }
-              },
-              child: const Text('Login'),
+                      // Option 1 - Show a [SnackBar]
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(e.toString()),
+                        ),
+                      );
+
+                      // Option 2 - Show a dialog
+                      // await errDialog(context, e.message ?? "e.code");
+                    } catch (e) {
+                      dev.log("We have a real error: $e");
+                    }
+                  },
+                  child: const Text('Login'),
+                ),
+              ],
             ),
             TextButton(
               onPressed: () async {
-                final userCredential = await Authentication.signInWithGoogle(context);
+                // OLD
+                // final userCredential = await Authentication.signInWithGoogle(context);
 
-                if (userCredential != null) {
-                  Navigator.pushNamedAndRemoveUntil(context, ROUTE_VERIFY, (_) => false);
-                }
+                final authService = AuthService.firebase();
+                final auser = await authService.signInWithGoogle();
+
+                Navigator.pushNamedAndRemoveUntil(context, ROUTE_VERIFY, (_) => false);
               },
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(35, 8, 35, 8),
@@ -149,6 +172,7 @@ class _LoginViewState extends State<LoginView> {
               },
               child: const Text("Sign Up here"),
             ),
+
             //Text("Current User: ${currUser?.email}"),
           ],
         ),
